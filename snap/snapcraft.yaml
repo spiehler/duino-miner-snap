@@ -1,0 +1,43 @@
+name: avr-miner
+version: '4.3'
+summary: Duino-Coin Official AVR Miner
+description: |
+  Duino-Coin Official AVR Miner 4.3 © MIT licensed
+  https://duinocoin.com
+  https://github.com/revoxhere/duino-coin
+  Duino-Coin Team & Community 2019-2024
+
+base: core24
+grade: stable
+confinement: strict
+
+apps:
+  avr-miner:
+    command: bin/avr-miner
+    plugs: 
+      - network
+      - network-bind
+      - hardware-observe
+      - serial-port
+    daemon: simple
+    restart-condition: always
+
+parts:
+  avr-miner:
+    plugin: python
+    source: .
+    source-subdir: src
+    python-packages:
+      - colorama
+      - pypresence
+      - psutil
+      - pyserial
+    stage-packages:
+      - python3
+      - python3-pip
+      - python3-serial
+    override-build: |
+      craftctl default
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp $SNAPCRAFT_PART_SRC/src/AVR_Miner.py $SNAPCRAFT_PART_INSTALL/bin/avr-miner
+      chmod +x $SNAPCRAFT_PART_INSTALL/bin/avr-miner
